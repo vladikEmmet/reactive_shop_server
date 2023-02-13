@@ -18,7 +18,7 @@ const Basket = sequelize.define("basket", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
-const BasketDevice = sequelize.define("basket_Device", {
+const BasketDevice = sequelize.define("basket_device", {
   id: { type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true },
 });
 
@@ -64,7 +64,7 @@ Token.belongsTo(User);
 User.hasMany(Rating);
 Rating.belongsTo(User);
 
-Basket.hasMany(BasketDevice);
+Basket.hasMany(BasketDevice, { as: "devices" });
 BasketDevice.belongsTo(Basket);
 
 Type.hasMany(Device);

@@ -13,7 +13,6 @@ router.post(
 router.post("/login", userController.login);
 router.get("/activate/:link", userController.activate);
 router.post("/logout", userController.logout);
-router.get("/refresh", userController.refresh);
-// router.post("/delete", userController.deleteAll);
+router.get("/refresh", authMiddleware, userController.refresh);
 
 module.exports = router;

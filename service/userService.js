@@ -1,9 +1,10 @@
-const { User } = require("../models/models");
+const { User, Basket, BasketDevice } = require("../models/models");
 const bcrypt = require("bcrypt");
 const uuid = require("uuid");
 const mailService = require("./mailService");
 const tokenService = require("./tokenService");
 const UserDto = require("../dtos/userDto");
+const BasketDto = require("../dtos/basketDto");
 const basketService = require("./basketService");
 const ApiError = require("../error/ApiError");
 
@@ -32,13 +33,14 @@ class UserService {
     );
 
     const userDto = new UserDto(user);
+    const basketDto = new BasketDto(basket);
     const tokens = tokenService.generateTokens({ ...userDto });
     await tokenService.saveToken(userDto.id, tokens.refreshToken);
 
     return {
       ...tokens,
       user: userDto,
-      basket,
+      basket: basketDto,
     };
   }
 

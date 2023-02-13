@@ -1,7 +1,4 @@
 const ApiError = require("../error/ApiError");
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
-const { User, Basket, Token } = require("../models/models");
 const userService = require("../service/userService");
 const { validationResult } = require("express-validator");
 
