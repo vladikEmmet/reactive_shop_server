@@ -1,6 +1,7 @@
 const ApiError = require("../error/ApiError");
 const userService = require("../service/userService");
 const { validationResult } = require("express-validator");
+const cookie = require("cookie");
 
 class UserController {
   async registration(req, res, next) {
@@ -12,10 +13,19 @@ class UserController {
 
       const { email, password, role } = req.body;
       const userData = await userService.registration(email, password, role);
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("refreshToken", userData.refreshToken, {
+          sameSite: "none",
+          secure: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+        })
+      );
+      // res.cookie("refreshToken", userData.refreshToken, {
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      //   httpOnly: true,
+      // });
       return res.json(userData);
     } catch (err) {
       next(err);
@@ -26,10 +36,20 @@ class UserController {
     try {
       const { email, password } = req.body;
       const userData = await userService.login(email, password);
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
+      // res.cookie("refreshToken", userData.refreshToken, {
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      //   httpOnly: true,
+      // })
+
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("refreshToken", userData.refreshToken, {
+          sameSite: "none",
+          secure: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+        })
+      );
       return res.json(userData);
     } catch (e) {
       next(e);
@@ -39,8 +59,17 @@ class UserController {
   async logout(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("refreshToken", "", {
+          sameSite: "none",
+          secure: true,
+          maxAge: 1,
+          httpOnly: true,
+        })
+      );
       const token = await userService.logout(refreshToken);
-      res.clearCookie("refreshToken");
+      // res.clearCookie("refreshToken");
       return res.json(token);
     } catch (err) {
       next(err);
@@ -61,10 +90,20 @@ class UserController {
     try {
       const { refreshToken } = req.cookies;
       const userData = await userService.refresh(refreshToken);
-      res.cookie("refreshToken", userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000,
-        httpOnly: true,
-      });
+      // res.cookie("refreshToken", userData.refreshToken, {
+      //   maxAge: 30 * 24 * 60 * 60 * 1000,
+      //   httpOnly: true,
+      // });
+
+      res.setHeader(
+        "Set-Cookie",
+        cookie.serialize("refreshToken", userData.refreshToken, {
+          sameSite: "none",
+          secure: true,
+          maxAge: 30 * 24 * 60 * 60 * 1000,
+          httpOnly: true,
+        })
+      );
       return res.json(userData);
     } catch (e) {
       next(e);
